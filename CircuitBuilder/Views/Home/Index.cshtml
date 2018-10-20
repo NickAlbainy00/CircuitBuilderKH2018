@@ -2,6 +2,7 @@
     ViewBag.Title = "Home Page";
 }
 
+@* Tutorial window *@
 <div hidden class="jumbotron disposable">
     <h1>Welcome to Circuit Builder v1</h1>
     <p class="lead">Create circuit diagrams, and generate logical expressions.</p>
@@ -9,57 +10,98 @@
     <p><a href="#" class="btn btn-primary btn-lg">Close tutorial</a></p>
 </div>
 
-@*https://codepen.io/dlouise/pen/NPZMjo*@
-
+@* Logic Designer *@
 <body>
     <div class="row">
         <div class="panel-body">
-            <div class="container">
+            <div class="container">             
+                <div class="row" style="padding-bottom:20px;">                  
+                    <div class="col-lg-12" id="diagram_container"
+                         style="background-position: 18px 11px;
+                                height: auto;
+                                border: 1px solid rgb(204,204,204);
+                                resize:both;
+                                overflow: hidden;">
+                        <canvas style="width:100%;height:inherit;opacity:0.4;margin:0;padding:0;" id="diagram"></canvas>  
+                    </div>
+                </div>   
+                <div class="row" style="padding-bottom:20px;">
+                    <div class="col-sm-2"><button onclick="new_OR()" class="btn btn-info" style="width:100%;">OR</button></div>
+                    <div class="col-sm-2"><button onclick="new_AND()" class="btn btn-info" style="width:100%;">AND</button></div>
+                    <div class="col-sm-2"><button onclick="new_NOR()" class="btn btn-info" style="width:100%;">NOR</button></div>
+                    <div class="col-sm-2"><button onclick="new_NAND()" class="btn btn-info" style="width:100%;">NAND</button></div>
+                    <div class="col-sm-2"><button onclick="new_NOT()" class="btn btn-info" style="width:100%;">NOT</button></div>             
+                </div>        
                 <div class="row">
-                    @*Do stuff here-- controls?? draggables?? *@ <p id="test"></p>
+                    <div class="col-sm-2"><button onclick="new_SRC()" class="btn btn-warning" style="width:100%">SOURCE</button></div>
+                    <div class="col-sm-2"><button onclick="new_PRB()" class="btn btn-warning" style="width:100%">PROBE</button></div>
                 </div>
-                
-                <div class="col-lg-11" id="diagram_container" 
-                        style=
-                        "background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGUlEQVQYV2NkIBIwEqmOYVQh3pAiNnj+AwALaAEKfsPrZgAAAABJRU5ErkJggg==); 
-                            background-position: 18px 11px;
-                            height: 300px;">
-                    <aside class="ploppable" draggable="true" id="dragme"></aside>
-                    <aside class="ploppable" draggable="true" id="dragme2"></aside>
-                    <aside class="test ploppable" draggable="true" id="dragme3"></aside>                   
-                </div>
-    
             </div>
         </div>
     </div>
 </body>
 
-
+@* Special styles for attatching images to components *@
 <style>
+      /* General Inheritable Component container */
         aside { 
-        position:  absolute;
-        left: 0;
-        top: 0; /* set these so Chrome doesn't return 'auto' from getComputedStyle */
-        width: 200px; 
-        background: rgba(255,255,255,0.66); 
-        border: 2px  solid rgba(0,0,0,0.5); 
-        border-radius: 4px; padding: 8px;
-    }
+            position:  absolute;
+            left: 0;
+            top: 0; /* set these so Chrome doesn't return 'auto' from getComputedStyle */
+            width: 200px; 
+            background: rgba(255,255,255,0.66); 
+            border: 2px  solid rgba(0,0,0,0.5); 
+            border-radius: 4px; padding: 8px;
+        }
+        /* Specific containers */
+        .OR {
+            background-color:orange;
+        }
+        .AND {
+            background-color:lightpink;
+        }
+        .NOR {
+            background-color:blueviolet;
+        }
+        .NAND {
+            background-color:yellow;
+        }
+        .NOT {
+            background-color:cornflowerblue;
+        }
+        .SRC {
+            background-color:red;
+        }
+        .PRB {
+            background-color:gray;
+        }
 </style>
 
 
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            //On load here
+
         });
 
+        //CNTRL+CLICK CHECKER
+        $(document).keydown(function (event) {
+            if (event.which == "17")
+                cntrlIsPressed = true;
+        });
+        $(document).keyup(function (event) {
+            cntrlIsPressed = false;
+        })
+        var cntrlIsPressed = false;
+
+
+        //Handle Drag Element Events, get source of event trigger with event.target
         var target_elem;
         function drag_start(event) {
             target_elem = event.target;
             var style = window.getComputedStyle(event.target, null);
             event.dataTransfer.setData("text/plain",
-            (parseInt(style.getPropertyValue("left"), 10) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top"), 10) - event.clientY));
+            (parseInt(style.getPropertyValue("left"), 10) - event.clientX ) + ',' + (parseInt(style.getPropertyValue("top"), 10) - event.clientY));
         }
         function drag_over(event) {
             event.preventDefault();           
@@ -73,6 +115,7 @@
             event.preventDefault();
             return false;
         }
+        var components = 0;
         var ploppables = document.getElementsByClassName("ploppable");
         var numPloppable = ploppables.length;
         for (i = 0; i < numPloppable; i++) {
@@ -82,7 +125,64 @@
         document.body.addEventListener('drop', drop, false);
 
 
+        //Listeners for CNTRL + CLICK Wire connect events
+        function connect_node(mouseButton) {
+            if (cntrlIsPressed) {
+                switch(mouseButton)
+                {
+                    case 1:
+                        //connect nodes together
+                        break;
+                    default:
+                        break;
+                }           
+            }
+        }
 
+
+        //Generate new components, unique IDs, class = [component] ploppable
+        function new_OR() {
+            components = components + 1;
+            $("#diagram_container").append('<aside class="OR ploppable" draggable="true" id="newOR'+components.toString()+'"/>');
+            document.getElementById("newOR" + components.toString()).addEventListener('dragstart', drag_start, false);
+            document.getElementById("newOR" + components.toString()).addEventListener('click', connect_node(1), false)
+        }
+        function new_AND() {
+            components = components + 1;
+            $("#diagram_container").append('<aside class="AND ploppable" draggable="true" id="newAND'+components.toString()+'"/>');
+            document.getElementById("newAND" + components.toString()).addEventListener('dragstart', drag_start, false);
+            document.getElementById("newAND" + components.toString()).addEventListener('click', connect_node(1), false);
+        }
+        function new_NOR() {
+            components = components + 1;
+            $("#diagram_container").append('<aside class="NOR ploppable" draggable="true" id="newNOR' + components.toString() + '"/>');
+            document.getElementById("newNOR" + components.toString()).addEventListener('dragstart', drag_start, false);
+            document.getElementById("newNOR" + components.toString()).addEventListener('click', connect_node(1), false);
+        }
+        function new_NAND() {
+            components = components + 1;
+            $("#diagram_container").append('<aside class="NAND ploppable" draggable="true" id="newNAND' + components.toString() + '"/>');
+            document.getElementById("newNAND" + components.toString()).addEventListener('dragstart', drag_start, false);
+            document.getElementById("newNAND" + components.toString()).addEventListener('click', connect_node(1), false);
+        }
+        function new_NOT() {
+            components = components + 1;
+            $("#diagram_container").append('<aside class="NOT ploppable" draggable="true" id="newNOT' + components.toString() + '"/>');
+            document.getElementById("newNOT" + components.toString()).addEventListener('dragstart', drag_start, false);
+            document.getElementById("newNOT" + components.toString()).addEventListener('click', connect_node(1), false);
+        }
+        function new_SRC() {
+            components = components + 1;
+            $("#diagram_container").append('<aside class="SRC ploppable" draggable="true" id="newSRC' + components.toString() + '"/>');
+            document.getElementById("newSRC" + components.toString()).addEventListener('dragstart', drag_start, false);
+            document.getElementById("newSRC" + components.toString()).addEventListener('click', connect_node(1), false);
+        }
+        function new_PRB() {
+            components = components + 1;
+            $("#diagram_container").append('<aside class="PRB ploppable" draggable="true" id="newPRB' + components.toString() + '"/>');
+            document.getElementById("newPRB" + components.toString()).addEventListener('dragstart', drag_start, false);
+            document.getElementById("newPRB" + components.toString()).addEventListener('click', connect_node(1), false);
+        }
     </script>    
 }
 
