@@ -8,10 +8,10 @@ namespace CircuitBuilder.Logic
     public class Source : ILogicNode
     {
         // The use of a dictionary forces the lack of redundant variable definition.
-        public static Dictionary<string, Boolean> truthValues = new Dictionary<string, Boolean>();
+        public static Dictionary<string, bool> truthValues = new Dictionary<string, bool>();
         public string name = "x";
 
-        public Source(String name)
+        public Source(string name)
             // Sets name to false by default in the truthValues dictionary. 
         {
             if (name.Length > 0)
@@ -31,14 +31,12 @@ namespace CircuitBuilder.Logic
             return name;
         }
 
-        public bool
-
         public string GetName()
         {
             return name;
         }
 
-        public void SetName(String name)
+        public void SetName(string name)
         {
             this.name = name;
         }
@@ -53,9 +51,15 @@ namespace CircuitBuilder.Logic
             return true;
         }
 
-        public static void SetVariable(String varName, Boolean value)
+        public static void SetVariable(string varName, bool value)
         {
             truthValues.Add(varName, value);
         }
+
+        public void SetInputState(bool value)
+        {
+            truthValues[this.name] = value;
+        }
+
     }
 }
