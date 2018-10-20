@@ -19,7 +19,7 @@ namespace CircuitBuilder.Logic
             if (node.IsGate())
             {
                foreach(ILogicNode child in node.GetNodeInputs()){
-                    // 
+                    // null children mean that there is a connection that goes to nothing, this is invalid
 
                     if(child == null)
                     {
