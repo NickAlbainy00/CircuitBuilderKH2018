@@ -212,6 +212,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Logic\CircuitChecker.cs" />
     <Compile Include="Logic\ILogicNode.cs" />
     <Compile Include="Logic\ILogicGate.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
