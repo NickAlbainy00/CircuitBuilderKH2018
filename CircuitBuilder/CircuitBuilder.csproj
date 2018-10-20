@@ -212,9 +212,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Logic\Gates\AndGate.cs" />
     <Compile Include="Logic\Gates\NotGate.cs" />
     <Compile Include="Logic\Gates\OrGate.cs" />
+=======
+    <Compile Include="Logic\CircuitChecker.cs" />
+>>>>>>> refs/remotes/origin/LogicChecker
     <Compile Include="Logic\ILogicNode.cs" />
     <Compile Include="Logic\ILogicGate.cs" />
     <Compile Include="Logic\Source.cs" />
