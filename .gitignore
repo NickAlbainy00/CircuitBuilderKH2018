@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/CircuitBuilder/v15/Server/sqlite3/db.lock
+/.vs/CircuitBuilder/v15/Server/sqlite3/storage.ide
+/.vs/CircuitBuilder/v15
+/.vs/CircuitBuilderKH2018/v15
+/.vs/ProjectSettings.json
+/CircuitBuilder/obj/Debug
+/CircuitBuilder/obj/Release
+/CircuitBuilder.Tests/obj
